@@ -4,19 +4,13 @@ require 'sinatra/base'
 
 class MyApp < Sinatra::Base
   get '/' do
-    body = Async::HTTP::Body::Writable.new
+    endpoint = Async::HTTP::URLEndpoint.parse('https://raksul.com')
+    client = Async::HTTP::Client.new(endpoint)
 
-    Async::Task.current.async do |task|
-      endpoint = Async::HTTP::URLEndpoint.parse('https://raksul.com')
-      client = Async::HTTP::Client.new(endpoint)
-      response = client.get('/')
-      body.write(response.read)
-    ensure
-      client.close
-      body.close
-    end
-
-    body
+    response = client.get('/')
+    response.read
+  ensure
+    client.close
   end
 end
 
