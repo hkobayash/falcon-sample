@@ -12,6 +12,12 @@ class MyApp < Sinatra::Base
   ensure
     client.close
   end
+
+  get '/sleep' do
+    Async::Task.current.sleep(1)
+
+    'Wake Up!'
+  end
 end
 
 use MyApp
